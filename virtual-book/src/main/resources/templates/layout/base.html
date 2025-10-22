@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Book</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Opcional: Configuración personalizada de Tailwind -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1e40af',
+            secondary: '#64748b',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-100">
+<!-- Navigation -->
+<nav class="bg-blue-600 text-white p-4 shadow-lg">
+  <div class="container mx-auto flex justify-between items-center">
+    <a th:href="@{/}" class="text-2xl font-bold">📚 Virtual Book</a>
+    <div class="space-x-4">
+      <a th:href="@{/books}" class="hover:underline transition duration-300">Libros</a>
+      <a th:href="@{/authors}" class="hover:underline transition duration-300">Autores</a>
+      <a th:href="@{/categories}" class="hover:underline transition duration-300">Categorías</a>
+      <a th:href="@{/favorites}" class="hover:underline transition duration-300"
+         sec:authorize="isAuthenticated()">❤️ Favoritos</a>
+      <a th:href="@{/profile}" class="hover:underline transition duration-300"
+         sec:authorize="isAuthenticated()">👤 Perfil</a>
+      <a th:href="@{/auth/login}" class="hover:underline transition duration-300"
+         sec:authorize="!isAuthenticated()">🔑 Login</a>
+      <a th:href="@{/auth/register}" class="hover:underline transition duration-300"
+         sec:authorize="!isAuthenticated()">📝 Registro</a>
+      <form th:action="@{/logout}" method="post" class="inline" sec:authorize="isAuthenticated()">
+        <button type="submit" class="hover:underline transition duration-300">🚪 Logout</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="container mx-auto mt-8 p-4 min-h-screen">
+  <div th:insert="${content}"></div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white p-6 mt-12">
+  <div class="container mx-auto text-center">
+    <p>&copy; 2024 Virtual Book. Todos los derechos reservados.</p>
+    <p class="text-gray-400 text-sm mt-2">Tu librería virtual favorita</p>
+  </div>
+</footer>
+</body>
+</html>

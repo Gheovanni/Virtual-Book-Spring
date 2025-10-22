@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro - Virtual Book</title>
+  <!-- Favicon -->
+  <link rel="shortcut icon" th:href="@{/img/book.png}" type="image/x-icon">
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="w-full h-screen">
+<div class="w-full h-screen p-2 flex flex-col bg-white lg:flex-row">
+  <!-- Contenedor del formulario -->
+  <div class="flex flex-col w-full h-full lg:w-3/5 lg:order-2">
+    <div class="flex flex-col items-center w-full h-full lg:justify-center">
+      <img th:src="@{/img/VirtualBooks.png}" alt="Virtual Books Logo" class="w-48 h-auto" />
+      <h1 class="text-red-500 font-bold text-2xl mb-10 mt-10">Registrarse</h1>
+
+      <!-- FORMULARIO DE REGISTRO -->
+      <form th:action="@{/auth/register}" th:object="${user}" method="POST" class="w-4/5 lg:flex flex-col items-center">
+
+        <!-- Mostrar errores generales -->
+        <div th:if="${#fields.hasErrors('*')}" class="w-full lg:w-2/5 bg-red-100 text-red-700 p-4 rounded mb-4 text-sm">
+          <ul class="list-disc pl-5">
+            <li th:each="error : ${#fields.errors('*')}" th:text="${error}"></li>
+          </ul>
+        </div>
+
+        <!-- Campo Nombres -->
+        <input class="block w-full p-2 border border-gray-300 rounded-md outline-1 outline-red-500 mb-4 lg:w-2/5 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+               type="text" placeholder="Nombres" th:field="*{nombre}" />
+        <div th:if="${#fields.hasErrors('nombre')}" class="w-full lg:w-2/5 text-red-500 text-sm mb-2 -mt-2">
+          <span th:errors="*{nombre}"></span>
+        </div>
+
+        <!-- Campo Apellidos -->
+        <input class="block w-full p-2 border border-gray-300 rounded-md outline-1 outline-red-500 mb-4 lg:w-2/5 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+               type="text" placeholder="Apellidos" th:field="*{apellido}" />
+        <div th:if="${#fields.hasErrors('apellido')}" class="w-full lg:w-2/5 text-red-500 text-sm mb-2 -mt-2">
+          <span th:errors="*{apellido}"></span>
+        </div>
+
+        <!-- Campo Email -->
+        <input class="block w-full p-2 border border-gray-300 rounded-md outline-1 outline-red-500 mb-4 lg:w-2/5 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+               type="email" placeholder="Email" th:field="*{email}" />
+        <div th:if="${#fields.hasErrors('email')}" class="w-full lg:w-2/5 text-red-500 text-sm mb-2 -mt-2">
+          <span th:errors="*{email}"></span>
+        </div>
+
+        <!-- Campo Contraseña -->
+        <div class="relative w-full lg:w-2/5 mb-4">
+          <input class="block w-full p-2 border border-gray-300 rounded-md outline-1 outline-red-500 pr-10 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                 type="password" placeholder="Contraseña" th:field="*{password}" id="password" />
+          <!-- Icono de "Ver Contraseña" -->
+          <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onclick="togglePassword('password')">
+            <svg id="see_password_img" class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+          </button>
+        </div>
+        <div th:if="${#fields.hasErrors('password')}" class="w-full lg:w-2/5 text-red-500 text-sm mb-2 -mt-2">
+          <span th:errors="*{password}"></span>
+        </div>
+
+        <!-- Campo Confirmar Contraseña -->
+        <div class="relative w-full lg:w-2/5 mb-4">
+          <input class="block w-full p-2 border border-gray-300 rounded-md outline-1 outline-red-500 pr-10 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                 type="password" placeholder="Confirmar Contraseña" th:field="*{confirmPassword}" id="confirmPassword" />
+          <!-- Icono de "Ver Contraseña" -->
+          <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onclick="togglePassword('confirmPassword')">
+            <svg id="see_confirm_password_img" class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+          </button>
+        </div>
+        <div th:if="${#fields.hasErrors('confirmPassword')}" class="w-full lg:w-2/5 text-red-500 text-sm mb-2 -mt-2">
+          <span th:errors="*{confirmPassword}"></span>
+        </div>
+
+        <button type="submit"
+                class="w-full p-2 rounded-md bg-red-500 text-white font-bold lg:w-2/5 hover:bg-red-600 duration-200 transition-colors">
+          Registrarse
+        </button>
+      </form>
+
+      <p class="my-8">
+        ¿Ya posees una cuenta?
+        <a th:href="@{/auth/login}" class="text-red-500 font-bold hover:text-red-700 transition-colors">Iniciar Sesión</a>
+      </p>
+    </div>
+    <p class="flex grow items-end text-gray-600 text-center lg:block p-4">
+      © 2025 VirtualBooks. Todos los derechos reservados.
+    </p>
+  </div>
+
+  <!-- Contenedor de la imagen -->
+  <div class="hidden lg:block bg-red-500 w-2/5 rounded-xl p-11 order-1 relative">
+    <div class="lg:bg-black opacity-20 w-full h-full rounded-xl absolute inset-0"></div>
+    <div class="w-full h-full relative">
+      <img th:src="@{/img/books.jpg}" alt="Libros" class="w-full h-full object-cover rounded-xl" />
+    </div>
+  </div>
+</div>
+
+<script>
+  // Función para mostrar/ocultar contraseña
+  function togglePassword(fieldId) {
+    const passwordInput = document.getElementById(fieldId);
+    const eyeIcon = document.getElementById(fieldId === 'password' ? 'see_password_img' : 'see_confirm_password_img');
+
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+        `;
+    } else {
+      passwordInput.type = 'password';
+      eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        `;
+    }
+  }
+
+  // Focus en el primer campo al cargar la página
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('input[th\\:field="*{nombre}"]').focus();
+  });
+
+  // Validación de contraseñas coincidentes
+  document.querySelector('form').addEventListener('submit', function(event) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    if (password !== confirmPassword) {
+      event.preventDefault();
+      alert('Las contraseñas no coinciden');
+    }
+  });
+</script>
+</body>
+</html>

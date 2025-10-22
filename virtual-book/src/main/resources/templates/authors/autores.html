@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autores - Virtual Book</title>
+  <!-- Favicon -->
+  <link rel="shortcut icon" th:href="@{/img/book.png}" type="image/x-icon">
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alertify CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+  <!-- Alertify JS -->
+  <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+</head>
+
+<body class="flex h-screen">
+<div class="min-h-screen flex font-sans">
+  <!-- Menu -->
+  <div th:replace="~{templates/menu :: menu}"></div>
+
+  <main class="flex-1 lg:pl-72 p-6 space-y-8">
+    <!-- Encabezado -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Autores</h1>
+      <div class="flex items-center space-x-4 ml-auto">
+        <!-- Formulario de búsqueda -->
+        <form method="GET" th:action="@{/authors}" class="flex items-center space-x-4">
+          <input type="text" name="buscar" th:value="${param.buscar}" placeholder="Buscar..."
+                 class="border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-purple-600" />
+          <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300">
+            Buscar
+          </button>
+        </form>
+
+        <!-- Botón de agregar autor -->
+        <a th:href="@{/authors/add}"
+           class="bg-green-400 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition duration-300">
+          AGREGAR
+        </a>
+      </div>
+    </div>
+
+    <!-- Tarjetas de autores con 3 columnas -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div th:each="autor : ${autores}"
+           class="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex items-center">
+        <!-- Foto del autor -->
+        <div th:if="${autor.foto}">
+          <img th:src="@{${autor.foto}}" th:alt="'Foto de ' + ${autor.nombre}"
+               class="w-32 h-32 object-cover rounded-md flex-shrink-0">
+        </div>
+        <div th:unless="${autor.foto}"
+             class="w-32 h-32 bg-gray-200 flex items-center justify-center rounded-md text-gray-500 flex-shrink-0">
+          Sin foto
+        </div>
+
+        <!-- Información del autor -->
+        <div class="ml-6 flex-1">
+          <h2 class="text-2xl font-semibold text-red-800 mb-1" th:text="${autor.nombre}"></h2>
+          <p class="text-sm text-gray-600 mb-3" th:text="'Nacionalidad: ' + ${autor.nacionalidad}"></p>
+
+          <!-- Botón eliminar -->
+          <form th:action="@{/authors/delete/{id}(id=${autor.id})}" method="POST"
+                class="form-delete-author">
+            <input type="hidden" name="_method" value="DELETE" />
+            <button type="button"
+                    class="btn-delete-author cursor-pointer flex items-center text-red-600 hover:text-red-800 transition"
+                    th:onclick="|confirmDelete('${autor.nombre}', ${autor.id})|">
+              <img th:src="@{/img/x.png}" alt="Eliminar" class="w-5 h-5 mr-1">
+              Eliminar
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Mensaje cuando no hay autores -->
+      <div th:if="${autores.empty}" class="col-span-full bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <h1 class="text-gray-600 text-center">Aún no agregas autores</h1>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Función para confirmar eliminación
+  function confirmDelete(nombre, id) {
+    alertify.confirm('Confirmar eliminación',
+            '¿Estás seguro de que quieres eliminar al autor "' + nombre + '"?',
+            function() {
+              // Si confirma, enviar el formulario
+              const form = document.querySelector('form[action="/authors/delete/' + id + '"]');
+              form.submit();
+            },
+            function() {
+              alertify.error('Cancelado');
+            }
+    ).set('labels', {ok:'Eliminar', cancel:'Cancelar'});
+  }
+
+  // Mostrar mensaje de éxito si existe
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('success')) {
+    alertify.success('Autor eliminado correctamente');
+  }
+</script>
+</body>
+</html>
